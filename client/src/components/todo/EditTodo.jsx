@@ -20,10 +20,10 @@ const EditTodo = (props) => {
             toast.error('Title is required')    
             return false
         }
-        if (!updatedDescription) {
-            toast.error('Description is required')
-            return false
-        }
+        // if (!updatedDescription) {
+        //     toast.error('Description is required')
+        //     return false
+        // }
         return true
     }
 

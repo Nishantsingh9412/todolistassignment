@@ -21,10 +21,10 @@ const Home = () => {
             toast.error('Title is required')
             return false
         }
-        if (!description) {
-            toast.error('Description is required')
-            return false
-        }
+        // if (!description) {
+        //     toast.error('Description is required')
+        //     return false
+        // }
         return true
     }
 
