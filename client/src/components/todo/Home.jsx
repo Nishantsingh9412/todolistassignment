@@ -3,6 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 import { IoTrashBin } from "react-icons/io5";
+import { FaCircle, FaCheckCircle } from "react-icons/fa";
 import { HiPencilAlt } from "react-icons/hi";
 import EditTodo from './EditTodo';
 
@@ -14,7 +15,8 @@ const Home = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [modalEditId, setModalEditId] = useState(null)
 
-    const serverURL = "http://localhost:5000"
+    // const serverURL = "http://localhost:5000"
+    const serverURL = "https://todolist-mk9v.onrender.com"
 
     const validate = () => {
         if (!title) {
@@ -48,6 +50,15 @@ const Home = () => {
             .then(res => {
                 setTodos(todos.filter(todo => todo._id !== id))
                 toast.success('Task Deleted Successfully')
+            }).catch(err => {
+                console.log(err)
+            })
+    }
+
+    const handleMarked = (id) => {
+        axios.patch(`${serverURL}/todos/mark-todo/${id}`)
+            .then(res => {
+                setTodos(todos.map(todo => todo._id === id ? { ...todo, status: !todo.status } : todo))
             }).catch(err => {
                 console.log(err)
             })
@@ -95,8 +106,27 @@ const Home = () => {
                                 todos.map((todo, index) => (
                                     <div key={index} className="flex flex-col p-5 mb-4 bg-white rounded shadow-lg">
                                         <div className='flex justify-between'>
-                                            <h3 className="mb-2 text-xl font-bold text-gray-800">{todo.title}</h3>
-                                            <div className="flex items-center mt-4">
+                                            <div>
+                                                {todo.status ? (
+                                                    <FaCheckCircle
+                                                        style={{ color: 'green', cursor: 'pointer' }}
+                                                        onClick={() => handleMarked(todo._id)}
+                                                    />
+                                                ) : (
+                                                    <FaCircle
+                                                        style={{ color: '#2196F3', cursor: 'pointer' }}
+                                                        onClick={() => handleMarked(todo._id)}
+                                                    />
+                                                )}
+                                            </div>
+                                            {/* <div> */}
+                                            <h3 className={`mb-2 text-xl font-bold text-gray-800 ${todo.status ? 'line-through' : ''}`}>
+                                                {todo.title}
+                                            </h3>
+                                            <div
+                                                className="flex items-center mt-4"
+                                                onClick={() => handleMarked(todo._id)}
+                                            >
                                                 <button
                                                     onClick={() => {
                                                         setModalEditId(todo._id)
@@ -111,7 +141,7 @@ const Home = () => {
                                                 </button>
                                             </div>
                                         </div>
-                                        <p className="text-gray-700 w-72">
+                                        <p className={`text-gray-700 w-72 ${todo.status ? 'line-through' : ''}`}>
                                             {todo.description}
                                         </p>
                                     </div>
